@@ -86,8 +86,8 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
-     * @param programId
-     * @return
+     * @param programId find program by using programId
+     * @return delete program from repo
      */
     @Override
     public boolean deleteProgram(Long programId) {
