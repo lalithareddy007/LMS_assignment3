@@ -19,32 +19,20 @@ public class ProgramController {
     @Autowired
     ProgramService programService;
 
-    /**
-     *
-     * @return get list of programs
-     */
+
     @GetMapping("/programs")
     public ResponseEntity<List<ProgramDto>> getPrograms() {
         List<ProgramDto> programList = programService.getAllPrograms();
         return ResponseEntity.status(HttpStatus.OK).body(programList);
     }
 
-    /**
-     *
-     * @param programId Long
-     * @return retrieves the details of a specific program
-     */
+
     @GetMapping(path="/programId/{programId}")
     public ResponseEntity <ProgramBatchDto> getOneProgramById(@Valid @PathVariable Long programId){
         ProgramBatchDto programBatchDto = programService.fetchProgramByProgramId(programId);
         return ResponseEntity.status(HttpStatus.OK).body(programBatchDto);
     }
 
-    /**
-     *
-     * @param programDto
-     * @return
-     */
 
     @PostMapping(path="/saveProgram")
     public ResponseEntity<ProgramDto> createAndSaveProgram(@Valid @RequestBody ProgramDto programDto) {
@@ -52,23 +40,13 @@ public class ProgramController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProgramDto);
     }
 
-    /**
-     *
-     * @param programId
-     * @param programDto
-     * @return
-     */
-    @PutMapping("/updateProgram/{programId}")
-    public ResponseEntity<ProgramDto> updateProgram(@Valid @PathVariable Long programId, @RequestBody ProgramDto programDto){
-        ProgramDto updatedProgramDto = programService.updateProgram(programId,programDto);
+
+    @PutMapping("/updateProgram")
+    public ResponseEntity<ProgramDto> updateProgram( @RequestBody ProgramDto programDto){
+        ProgramDto updatedProgramDto = programService.updateProgram(programDto);
         return ResponseEntity.status(HttpStatus.OK).body(updatedProgramDto);
     }
 
-    /**
-     *
-     * @param programId
-     * @return
-     */
     @DeleteMapping("/deleteProgram/{programId}")
     public ResponseEntity<String> deleteProgram(@Valid @PathVariable Long programId){
         boolean deletedProgram = programService.deleteProgram(programId);

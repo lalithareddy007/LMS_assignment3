@@ -7,7 +7,6 @@ import com.ninja.lms.entity.Batch;
 import com.ninja.lms.entity.Program;
 import com.ninja.lms.mapper.BatchMapper;
 import com.ninja.lms.mapper.ProgramMapper;
-import com.ninja.lms.repository.BatchRepository;
 import com.ninja.lms.repository.ProgramRepository;
 import com.ninja.lms.service.BatchService;
 import com.ninja.lms.service.ProgramService;
@@ -25,15 +24,13 @@ public class ProgramServiceImpl implements ProgramService {
     @Autowired
     ProgramMapper programMapper;
     @Autowired
-    BatchRepository batchRepository;
-    @Autowired
     BatchMapper batchMapper;
     @Autowired
     BatchService batchService;
 
     /**
-     * @param programId
-     * @return
+     * @param programId fetch program by using programId
+     * @return program with all batch List
      */
     @Override
     public ProgramBatchDto fetchProgramByProgramId(Long programId) {
@@ -42,26 +39,19 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
-     * @param programDto
-     * @return
+     * @param programDto given program request
+     * @return created and saved program in repo
      */
     @Override
     public ProgramDto createProgram(ProgramDto programDto) {
         Program program = programMapper.programDtoToProgramEntity(programDto);
-        //log.info("Program request details :"+ program);
-
-//        Program program1 = new Program();
-//        program1.setProgramName(program.getProgramName());
-//        program1.setProgramDescription(program.getProgramDescription());
-//        program1.setProgramStatus(program.getProgramStatus());
 
         Program newProgram = programRepository.save(program);
-        //log.info("New Program details:" + newProgram);
 
         ProgramDto programDto1 = programMapper.programToProgramDTO(newProgram);
         List<Batch> batchList = newProgram.getBatches();
         for (Batch batch : batchList) {
-            //Batch batch = batchMapper.batchDtoToBatch(batchDto);
+
             batch.setProgram(newProgram); // Set the Program reference
             BatchDto newBatch = batchMapper.batchToBatchDTO(batch);
             batchService.createBatch(newBatch);
@@ -73,7 +63,7 @@ public class ProgramServiceImpl implements ProgramService {
 }
 
     /**
-     * @return
+     * @return fetch all programs in repo
      */
     @Override
     public List<ProgramDto> getAllPrograms() {
@@ -83,18 +73,14 @@ public class ProgramServiceImpl implements ProgramService {
     }
 
     /**
-     * @param programId
-     * @param programDto
-     * @return
+     *
+     * @param programDto given updated program
+     * @return updated program
      */
     @Override
-    public ProgramDto updateProgram(Long programId, ProgramDto programDto) {
+    public ProgramDto updateProgram(ProgramDto programDto) {
         Program program = programMapper.programDtoToProgramEntity(programDto);
-        Program oldProgram = programRepository.findById(program.getProgramId()).orElseThrow();
-        oldProgram.setProgramId(programId);
-        //check is there any existing program with given programId
-        boolean existingBatch = programRepository.existsById(programId);
-        Program updatedProgram = programRepository.save(oldProgram);
+        Program updatedProgram = programRepository.save(program);
 
         return programMapper.programToProgramDTO(updatedProgram);
     }
